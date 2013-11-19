@@ -4,14 +4,14 @@
          bootstrap="vendor/autoload.php"
 >
     <testsuites>
-        <testsuite name="Raven Test Suite">
+        <testsuite name="Sentry Client Test Suite">
             <directory>./tests/</directory>
         </testsuite>
     </testsuites>
 
     <filter>
         <whitelist>
-            <directory suffix=".php">./src/Raven/</directory>
+            <directory suffix=".php">./src/Hautelook/SentryClient/</directory>
         </whitelist>
     </filter>
 </phpunit>

@@ -1,5 +1,5 @@
 {
-    "name": "raven/raven",
+    "name": "hautelook/sentry-client",
     "type": "library",
     "description": "A PHP client for Sentry (http://getsentry.com)",
     "keywords": ["log", "logging"],
@@ -7,12 +7,12 @@
     "license": "BSD",
     "authors": [
         {
-            "name": "David Cramer",
-            "email": "dcramer@gmail.com"
+            "name": "Adrien Brault",
+            "email": "adrien.brault@gmail.com"
         },
         {
-            "name": "Raven Contributors",
-            "homepage": "https://github.com/getsentry/raven-php/contributors"
+            "name": "Contributors",
+            "homepage": "https://github.com/hautelook/sentry-client/contributors"
         }
     ],
     "require": {
@@ -30,14 +30,14 @@
         "symfony/security": "~2.1"
     },
     "autoload": {
-        "psr-0": { "Raven\\": "src/" }
+        "psr-0": { "Hautelook\\SentryClient\\": "src/" }
     },
     "config": {
         "bin-dir": "bin"
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.0.x-dev"
+            "dev-master": "0.1.x-dev"
         }
     }
 }
