@@ -35,13 +35,6 @@ class CaptureCommand extends OperationCommand
             $this['timestamp'] = $this['timestamp']->format(\DateTime::ISO8601);
         }
 
-        if (isset($this->client['tags'])) {
-            $this->client['tags'] = array_merge($this->client['tags'], $this['tags'] ?: array());
-        }
-        if (isset($this->client['extra'])) {
-            $this->client['extra'] = array_merge($this->client['extra'], $this['extra'] ?: array());
-        }
-
         $factory = new VisitorFlyweight();
         $factory->addRequestVisitor('json', new JsonVisitor());
         $this->setRequestSerializer(new DefaultRequestSerializer($factory));
