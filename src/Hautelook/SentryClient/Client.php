@@ -73,6 +73,14 @@ class Client extends GuzzleClient
         return $configuration->process($config);
     }
 
+    /**
+     * @param ExceptionFactory $exceptionFactory
+     */
+    public function setExceptionFactory(ExceptionFactory $exceptionFactory)
+    {
+        $this->exceptionFactory = $exceptionFactory;
+    }
+
     public function captureException(\Exception $e, array $parameters = array())
     {
         if ($this->shouldIgnoreException($e)) {

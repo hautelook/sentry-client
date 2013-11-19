@@ -13,6 +13,13 @@ use Symfony\Component\Debug\Exception\FlattenException;
  */
 class ExceptionFactory
 {
+    private $fileBasePath;
+
+    public function __construct($fileBasePath = null)
+    {
+        $this->fileBasePath = $fileBasePath;
+    }
+
     /**
      * @param  \Exception $e
      * @return Exception
@@ -44,8 +51,18 @@ class ExceptionFactory
 
         $frames = array();
         foreach ($flattenException->getTrace() as $entry) {
+            $filename = $entry['file'];
+
+            if (null !== $this->fileBasePath) {
+                if (stripos($filename, $this->fileBasePath)) {
+                    $filename = null;
+                } else {
+                    $filename = substr($filename, strlen($this->fileBasePath));
+                }
+            }
+
             $frames[] = $frame = new Frame(
-                $entry['file'],
+                $filename,
                 (strlen($entry['class']) > 0 ? $entry['class'] . '::' : ''). $entry['function'],
                 $entry['class']
             );
