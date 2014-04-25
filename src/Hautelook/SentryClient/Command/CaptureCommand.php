@@ -126,7 +126,7 @@ class CaptureCommand extends OperationCommand
                     'required' => false,
                     'type' => 'array',
                     'items' => array(
-                        'type' => array('string', 'number'),
+                        'type' => array('string', 'number', 'array'),
                     ),
                     'location' => 'json',
                 ),
