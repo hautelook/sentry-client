@@ -3,6 +3,7 @@
 namespace Hautelook\SentryClient;
 
 use Guzzle\Common\Collection;
+use Guzzle\Http\Exception\ClientErrorResponseException;
 use Guzzle\Service\Client as GuzzleClient;
 use Guzzle\Service\Command\Factory\MapFactory;
 use Hautelook\SentryClient\Plugin\SentryAuthPlugin;
@@ -96,7 +97,11 @@ class Client extends GuzzleClient
             $parameters['level'] = $this->getSeverityLevel($e->getSeverity());
         }
 
-        return $this->capture($parameters);
+        try {
+            return $this->capture($parameters);
+        } catch (ClientErrorResponseException $e) {
+            return null;
+        }
     }
 
     private function getSeverityLevel($severity)
