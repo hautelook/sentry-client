@@ -3,8 +3,7 @@
 namespace Hautelook\SentryClient\Request\Factory;
 
 use Hautelook\SentryClient\Request\Interfaces\User;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\SecurityContextInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
@@ -12,13 +11,13 @@ use Symfony\Component\Security\Core\SecurityContextInterface;
 class SymfonyUserFactory implements UserFactoryInterface
 {
     /**
-     * @var SecurityContextInterface
+     * @var TokenStorageInterface
      */
-    private $securityContext;
+    private $tokenStorage;
 
-    public function __construct(SecurityContextInterface $securityContext)
+    public function __construct(TokenStorageInterface $tokenStorage)
     {
-        $this->securityContext = $securityContext;
+        $this->tokenStorage = $tokenStorage;
     }
 
     /**
@@ -26,7 +25,7 @@ class SymfonyUserFactory implements UserFactoryInterface
      */
     public function create()
     {
-        $token = $this->securityContext->getToken();
+        $token = $this->tokenStorage->getToken();
 
         if (null === $token) {
             return null;
