@@ -20,7 +20,7 @@
         "guzzle/guzzle": "~3.7",
         "symfony/config": "~2.1",
         "symfony/debug": "~2.3",
-        "rhumsaa/uuid": "~2.0"
+        "ramsey/uuid": "~2.0"
     },
     "require-dev": {
         "hautelook/frankenstein": "0.1.*",
