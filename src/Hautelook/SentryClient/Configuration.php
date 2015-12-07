@@ -127,6 +127,7 @@ class Configuration
                                 ->scalarNode('level')->end()
                                 ->scalarNode('logger')->end()
                                 ->scalarNode('platform')->end()
+                                ->scalarNode('release')->end()
                                 ->arrayNode('tags')
                                     ->prototype('scalar')->end()
                                 ->end()
