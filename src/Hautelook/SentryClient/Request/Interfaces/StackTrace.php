@@ -39,10 +39,16 @@ class StackTrace implements ToArrayInterface
      */
     public function toArray()
     {
+        $frames = array_map(function (Frame $frame) {
+            return $frame->toArray();
+        }, $this->getFrames());
+
+        if (count($frames) < 1) {
+            $frames = new \ArrayObject(); // the sentry api would prefer an empty object rather than an empty array
+        }
+
         return array(
-            'frames' => array_map(function (Frame $frame) {
-                return $frame->toArray();
-            }, $this->getFrames()),
+            'frames' => $frames,
         );
     }
 }
