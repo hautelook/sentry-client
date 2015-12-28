@@ -114,6 +114,11 @@ class CaptureCommand extends OperationCommand
                     'type' => 'string',
                     'location' => 'json',
                 ),
+                'release' => array(
+                    'required' => false,
+                    'type' => 'string',
+                    'location' => 'json',
+                ),
                 'modules' => array(
                     'required' => false,
                     'type' => 'array',
