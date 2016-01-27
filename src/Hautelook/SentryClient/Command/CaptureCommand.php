@@ -2,15 +2,13 @@
 
 namespace Hautelook\SentryClient\Command;
 
-use Guzzle\Service\Command\AbstractCommand;
 use Guzzle\Service\Command\DefaultRequestSerializer;
 use Guzzle\Service\Command\LocationVisitor\VisitorFlyweight;
 use Guzzle\Service\Command\OperationCommand;
 use Guzzle\Service\Description\Operation;
 use Hautelook\SentryClient\Client;
-use Hautelook\SentryClient\Request\LocationVisitor\HeaderVisitor;
 use Hautelook\SentryClient\Request\LocationVisitor\JsonVisitor;
-use Rhumsaa\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @author Adrien Brault <adrien.brault@gmail.com>
@@ -23,7 +21,16 @@ class CaptureCommand extends OperationCommand
     protected function init()
     {
         if (!isset($this['event_id'])) {
-            $this['event_id'] = Uuid::uuid4()->toString();
+            /**
+             * Support the old namespace
+             */
+            if (class_exists('Rhumsaa\Uuid\Uuid')) {
+                $uuid = \Rhumsaa\Uuid\Uuid::uuid4();
+            } else {
+                $uuid = Uuid::uuid4();
+            }
+
+            $this['event_id'] = $uuid->toString();
         }
 
         if (!isset($this['timestamp'])) {
