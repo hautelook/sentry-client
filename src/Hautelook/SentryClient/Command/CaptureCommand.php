@@ -39,7 +39,7 @@ class CaptureCommand extends OperationCommand
         if ($this['timestamp'] instanceof \DateTime) {
             $this['timestamp'] = clone $this['timestamp'];
             $this['timestamp']->setTimezone(new \DateTimeZone('UTC'));
-            $this['timestamp'] = $this['timestamp']->format(\DateTime::ISO8601);
+            $this['timestamp'] = $this['timestamp']->format('Y-m-d\TH:i:s');
         }
 
         $factory = new VisitorFlyweight();
