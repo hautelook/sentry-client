@@ -30,7 +30,7 @@ class CaptureCommand extends OperationCommand
                 $uuid = Uuid::uuid4();
             }
 
-            $this['event_id'] = $uuid->toString();
+            $this['event_id'] = str_replace('-', '', $uuid->toString());
         }
 
         if (!isset($this['timestamp'])) {
