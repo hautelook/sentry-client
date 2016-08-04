@@ -30,7 +30,7 @@ class CaptureCommand extends OperationCommand
                 $uuid = Uuid::uuid4();
             }
 
-            $this['event_id'] = $uuid->toString();
+            $this['event_id'] = str_replace('-', '', $uuid->toString());
         }
 
         if (!isset($this['timestamp'])) {
@@ -39,7 +39,7 @@ class CaptureCommand extends OperationCommand
         if ($this['timestamp'] instanceof \DateTime) {
             $this['timestamp'] = clone $this['timestamp'];
             $this['timestamp']->setTimezone(new \DateTimeZone('UTC'));
-            $this['timestamp'] = $this['timestamp']->format(\DateTime::ISO8601);
+            $this['timestamp'] = $this['timestamp']->format('Y-m-d\TH:i:s');
         }
 
         $factory = new VisitorFlyweight();
