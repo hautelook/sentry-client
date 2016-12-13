@@ -90,6 +90,10 @@ class ErrorHandler
             }
 
             unset($this->reservedMemory);
+            
+            if (!($lastError['type'] & (E_PARSE | E_ERROR | E_CORE_ERROR | E_COMPILE_ERROR))) {
+                return;
+            }
 
             // The symfony/debug FatalErrorException will use xdebug if available to get the stacktrace
             $e = new FatalErrorException(
