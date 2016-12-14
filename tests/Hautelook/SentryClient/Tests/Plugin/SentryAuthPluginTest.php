@@ -3,11 +3,9 @@
 namespace Hautelook\SentryClient\Tests\Plugin;
 
 use Guzzle\Common\Event;
-use Hautelook\Frankenstein\TestCase;
-use Hautelook\SentryClient\Client;
 use Hautelook\SentryClient\Plugin\SentryAuthPlugin;
 
-class SentryAuthPluginTest extends TestCase
+class SentryAuthPluginTest extends \PHPUnit_Framework_TestCase
 {
     public function test()
     {
@@ -27,15 +25,25 @@ class SentryAuthPluginTest extends TestCase
             'secret'
         );
 
-        $requestProphecy = $this->prophesize('Guzzle\Http\Message\Request');
-        $requestProphecy
-            ->setHeader('X-Sentry-Auth', $expectedHeader)
-            ->willReturn()
-        ;
+        $request = $this->createRequestMock();
+
+        $request->expects($this->atLeastOnce())
+            ->method('setHeader')
+            ->with('X-Sentry-Auth', $expectedHeader);
 
         $plugin->onRequestBeforeSend(new Event(array(
-            'request' => $requestProphecy->reveal(),
+            'request' => $request,
             'timestamp' => 7777777
         )));
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|\Guzzle\Http\Message\Request
+     */
+    private function createRequestMock()
+    {
+        return $this->getMockBuilder('Guzzle\Http\Message\Request')
+            ->disableOriginalConstructor()
+            ->getMock();
     }
 }

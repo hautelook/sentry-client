@@ -2,20 +2,16 @@
 
 namespace Hautelook\SentryClient\Tests;
 
-use Hautelook\Frankenstein\TestCase;
 use Hautelook\SentryClient\DsnParser;
 
-class DsnParserTest extends TestCase
+class DsnParserTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @dataProvider getTestParseData
      */
     public function testParse($dsn, $expectedResult)
     {
-        $this
-            ->array(DsnParser::parse($dsn))
-                ->isEqualTo($expectedResult)
-        ;
+        $this->assertEquals($expectedResult, DsnParser::parse($dsn));
     }
 
     public function getTestParseData()
@@ -77,13 +73,9 @@ class DsnParserTest extends TestCase
      */
     public function testParseInvalidDsn($dsn, $expectedException, $expectedExceptionMessage)
     {
-        $this
-            ->exception(function () use ($dsn) {
-                DsnParser::parse($dsn);
-            })
-                ->isInstanceOf($expectedException)
-                ->hasMessage($expectedExceptionMessage)
-        ;
+        $this->setExpectedException($expectedException, $expectedExceptionMessage);
+
+        DsnParser::parse($dsn);
     }
 
     public function getTestParseInvalidDsnData()
