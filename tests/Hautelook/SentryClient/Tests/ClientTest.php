@@ -2,10 +2,9 @@
 
 namespace Hautelook\SentryClient\Tests;
 
-use Hautelook\Frankenstein\TestCase;
 use Hautelook\SentryClient\Client;
 
-class ClientTest extends TestCase
+class ClientTest extends \PHPUnit_Framework_TestCase
 {
     public function testCreateClientWithDsn()
     {
@@ -13,14 +12,9 @@ class ClientTest extends TestCase
             'dsn' => 'https://public:secret@sentryapp.com/yolo/1337'
         ));
 
-        $this
-            ->string($client->getBaseUrl(true))
-                ->isEqualTo('https://sentryapp.com/yolo/api/1337/')
-            ->string($client->getConfig('public_key'))
-                ->isEqualTo('public')
-            ->string($client->getConfig('secret_key'))
-                ->isEqualTo('secret')
-        ;
+        $this->assertEquals('https://sentryapp.com/yolo/api/1337/', $client->getBaseUrl(true));
+        $this->assertEquals('public', $client->getConfig('public_key'));
+        $this->assertEquals('secret', $client->getConfig('secret_key'));
     }
 
     public function testCreateClientWithoutDsn()
@@ -33,24 +27,16 @@ class ClientTest extends TestCase
             'path' => '/yolo/',
         ));
 
-        $this
-            ->string($client->getBaseUrl(true))
-                ->isEqualTo('https://sentryapp.com/yolo/api/1337/')
-            ->string($client->getConfig('public_key'))
-                ->isEqualTo('public')
-            ->string($client->getConfig('secret_key'))
-                ->isEqualTo('secret')
-        ;
+        $this->assertEquals('https://sentryapp.com/yolo/api/1337/', $client->getBaseUrl(true));
+        $this->assertEquals('public', $client->getConfig('public_key'));
+        $this->assertEquals('secret', $client->getConfig('secret_key'));
     }
 
     public function testFailingCreateClient()
     {
-        $this
-            ->exception(function () {
-                $client = Client::create(array());
-            })
-                ->isInstanceOf('Symfony\Component\Config\Definition\Exception\InvalidConfigurationException')
-        ;
+        $this->setExpectedException('Symfony\Component\Config\Definition\Exception\InvalidConfigurationException');
+
+        Client::create(array());
     }
 
     public function testClientPort()
@@ -62,10 +48,7 @@ class ClientTest extends TestCase
             'port' => 6666,
         ));
 
-        $this
-            ->string($client->getBaseUrl(true))
-                ->contains(':6666')
-        ;
+        $this->assertContains(':6666', $client->getBaseUrl(true));
     }
 
     public function testRequestOptions()
@@ -79,10 +62,7 @@ class ClientTest extends TestCase
             ),
         ));
 
-        $this
-            ->variable($client->getDefaultOption('foo'))
-                ->isEqualTo('bar')
-        ;
+        $this->assertEquals('bar', $client->getDefaultOption('foo'));
     }
 
     public function testCaptureCommand()
@@ -98,10 +78,7 @@ class ClientTest extends TestCase
         ));
         $request = $command->prepare();
 
-        $this
-            ->string($request->getUrl(true)->getPath())
-                ->isEqualTo('/api/1337/store/')
-        ;
+        $this->assertEquals('/api/1337/store/', $request->getUrl(true)->getPath());
     }
 
     public function testCaptureCommandFilterData()
@@ -121,15 +98,13 @@ class ClientTest extends TestCase
         $request = $command->prepare();
 
         $json = json_decode((string) $request->getBody(), true);
-        $this
-            ->string($json['extra']['password'])
-                ->isEqualTo('********')
-        ;
+
+        $this->assertEquals('********', $json['extra']['password']);
     }
 
     public function testIgnoreExceptions()
     {
-        $client = Client::create(array(
+        $config = array(
             'host' => 'localhost:1',
             'public_key' => 'public',
             'secret_key' => 'secret',
@@ -143,17 +118,23 @@ class ClientTest extends TestCase
                 'RuntimeException' => false,
                 'Exception',
             ),
-        ));
+        );
 
-        $this
-            ->variable($client->captureException(new \Exception()))
-                ->isNull()
-            ->variable($client->captureException(new \InvalidArgumentException()))
-                ->isNull()
-            ->exception(function () use ($client) {
-                // check that this exception is not ignored, and that the client tries to send it
-                $client->captureException(new \RuntimeException());
-            })
-        ;
+        /**
+         * @var Client $client
+         */
+        $client = $this->getMockBuilder('Hautelook\SentryClient\Client')
+            ->setConstructorArgs(array($config))
+            ->setMethods(array('capture'))
+            ->enableProxyingToOriginalMethods()
+            ->getMockForAbstractClass();
+
+        $client->expects($this->once())
+            ->method('capture');
+
+        $this->assertNull($client->captureException(new \Exception()));
+        $this->assertNull($client->captureException(new \InvalidArgumentException()));
+
+        $client->captureException(new \RuntimeException());
     }
 }

@@ -2,22 +2,16 @@
 
 namespace Hautelook\SentryClient\Tests\Command;
 
-use Hautelook\Frankenstein\TestCase;
-use Prophecy\Argument;
 use Hautelook\SentryClient\Client;
 
-class CaptureCommandTest extends TestCase
+class CaptureCommandTest extends \PHPUnit_Framework_TestCase
 {
     public function testMissingRequiredParameters()
     {
-        $client = $this->createClient();
+        $this->setExpectedException('Guzzle\Service\Exception\ValidationException');
 
-        $this
-            ->exception(function () use ($client) {
-                $client->getCommand('capture')->prepare();
-            })
-                ->isInstanceOf('Guzzle\Service\Exception\ValidationException')
-        ;
+        $client = $this->createClient();
+        $client->getCommand('capture')->prepare();
     }
 
     public function testValidParameters()
